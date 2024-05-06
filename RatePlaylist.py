@@ -21,7 +21,9 @@ foreach(playlist in playlists):
   if (not playlist.smart)
     print("Start rating " + playlist.title + " (" + playlist.leafCount + " photos)")
     foreach(photo in playlist.items()):
-      print(photo.title)
-      #photo.rate(rating)
+      print(photo.title + " (rating " + photo.userRating + ")")
+      if (photo.userRating == None):
+        print("update rating")
+        #photo.rate(rating)
   else:
     print("Ignored smart playlist " + playlist.title)
