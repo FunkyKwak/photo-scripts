@@ -16,7 +16,12 @@ rating = 6.0 # sur 10, en float
 
 plex = PlexServer(connexion.baseurl, connexion.token)
 
-playlist = plex.playlist(playlistName)
-foreach(photo in playlist.items()):
-  print(photo.title)
-  #photo.rate(rating)
+playlists = plex.playlists(playlistType: "photo", title: playlistName)
+foreach(playlist in playlists):
+  if (not playlist.smart)
+    print("Start rating " + playlist.title + " (" + playlist.leafCount + " photos)")
+    foreach(photo in playlist.items()):
+      print(photo.title)
+      #photo.rate(rating)
+  else:
+    print("Ignored smart playlist " + playlist.title)
