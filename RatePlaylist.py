@@ -1,4 +1,4 @@
-import connexion
+import Connexion
 from plexapi.server import PlexServer
 
 
@@ -14,7 +14,7 @@ rating = 6.0 # sur 10, en float
 
 
 
-plex = PlexServer(connexion.baseurl, connexion.token)
+plex = PlexServer(Connexion.baseurl, Connexion.token)
 
 playlists = plex.playlists(playlistType: "photo", title: playlistName)
 foreach(playlist in playlists):
