@@ -2,6 +2,9 @@ import os
 import xml.etree.ElementTree as ET
 import subprocess
 
+
+exiftool = "C:\\Users\\crazy\\Downloads\\exiftool-13.34_64\\exiftool-13.34_64\\exiftool.exe"
+
 def get_rating(photo_path):
     """
     Récupère la notation depuis le fichier XMP associé,
@@ -29,7 +32,7 @@ def get_rating(photo_path):
     try:
         # ExifTool doit être installé sur la machine
         result = subprocess.run(
-            ["C:\\Users\\crazy\\Downloads\\exiftool-13.34_64\\exiftool-13.34_64\\exiftool.exe",
+            [exiftool,
             "-Rating", "-XMP:Rating", "-xmp:Label", photo_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -49,3 +52,31 @@ def get_rating(photo_path):
         print(f"Erreur lecture EXIF pour {photo_path}: {e}")
 
     return None
+
+
+
+def set_xmp_rating(photo_path, rating):
+    """
+    Write rating to XMP sidecar for photo_path.
+    Creates the .xmp if missing.
+    """
+    try:
+        result = subprocess.run(
+            [
+                exiftool,
+                "-overwrite_original",
+                f"-Rating={rating}",
+                "-o", "%d%f.xmp",
+                photo_path
+            ],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            shell=False
+        )
+        if result.returncode != 0:
+            print(f"ExifTool error on {photo_path}: {result.stderr}")
+        else:
+            print(f"Updated rating {rating} for {photo_path}")
+    except Exception as e:
+        print(f"Failed to update {photo_path}: {e}")

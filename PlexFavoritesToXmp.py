@@ -21,23 +21,33 @@ print(f"Total media items to scan: {total_items}")
 print(f"=========================================")
 print(f"Title,Plex Rating,Metadata Rating,Message")
 for item in all_items:
-    #print(item.title, item.TYPE)   # TYPE is 'photo' or 'clip'
-    scanned_items = scanned_items + 1
-    plex_rating = item.userRating
 
     # Avancement de la boucle
+    scanned_items = scanned_items + 1
     if scanned_items % 1000 == 0:
         print(f"...{scanned_items} photos scanned, over {total_items}...")
 
     # Vérifie si la photo a une certaine notation
-    if plex_rating is not None:
-        metaRating = metadataLib.get_rating(PlexHelper.get_file_path(item))
+    if item.userRating is not None:
+        plex_rating = round(item.userRating/2)
 
-        if plex_rating != metaRating:
-            message = "⚠ Différence détectée !"
+        photo_path = PlexHelper.get_file_path(item)
+        metaRating = metadataLib.get_rating(photo_path)
+
+        print(f"{item.title},{plex_rating},{metaRating},", end="")
+
+        if metaRating is None:
+            metaRating = 0
+        
+        if plex_rating > metaRating:
+            print(f"⚠ Différence détectée ! ", end="")
+            metadataLib.set_xmp_rating(photo_path, plex_rating)
+        elif plex_rating == metaRating:
+            print(f"Already set")
+        elif plex_rating < metaRating:
+            print(f"Already higher than Plex rating")
         else:
-            message = ""
-        print(f"{item.title},{plex_rating},{metaRating},{message}")
+            print(f"")
 
 print(f"=========================================")
 
