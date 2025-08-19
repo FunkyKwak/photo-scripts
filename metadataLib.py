@@ -29,7 +29,8 @@ def get_rating(photo_path):
     try:
         # ExifTool doit être installé sur la machine
         result = subprocess.run(
-            ["exiftool", "-Rating", "-XMP:Rating", "-xmp:Label", photo_path],
+            ["C:\\Users\\crazy\\Downloads\\exiftool-13.34_64\\exiftool-13.34_64\\exiftool.exe",
+            "-Rating", "-XMP:Rating", "-xmp:Label", photo_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
