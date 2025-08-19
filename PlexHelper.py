@@ -35,4 +35,7 @@ def walk_album(album):
         yield from walk_album(sub)
 
 def get_file_path(item):
-    return item.media[0].parts[0].file.replace("/storage/[REDACTED]/", "//[REDACTED]/")
+    filePath = item.media[0].parts[0].file
+    filePath = filePath.replace("/storage/[REDACTED]/photo/", "Z:\\")
+    filePath = filePath.replace("/", "\\")
+    return filePath

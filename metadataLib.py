@@ -32,7 +32,8 @@ def get_rating(photo_path):
             ["exiftool", "-Rating", "-XMP:Rating", "-xmp:Label", photo_path],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
+            shell=False
         )
         output = result.stdout.strip()
 
