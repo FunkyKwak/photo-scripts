@@ -1,14 +1,17 @@
 import requests
 import json
+import os
 
 
-base_url = "https://[REDACTED]"
+base_url = os.environ["IMMICH_BASE_URL"]
+api_key = os.environ["IMMICH_API_KEY"]
+
 
 def get_asset_uuids(**filters) -> list[str]:
     headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-    'x-api-key': '[REDACTED]'
+    'x-api-key': api_key
     }
     page = 1
     size = int(filters.pop("size", 1000))  # max 1000 selon la doc
@@ -60,7 +63,7 @@ def set_favorite(uuids):
     })
     headers = {
     'Content-Type': 'application/json',
-    'x-api-key': '[REDACTED]'
+    'x-api-key': api_key
     }
 
     resp = requests.request("PUT", f"{base_url}/api/assets", headers=headers, data=payload)
