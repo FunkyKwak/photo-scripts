@@ -1,0 +1,31 @@
+name: Weekly Immich Update
+
+on:
+  schedule:
+    # Tous les lundis à 03h00 UTC
+    - cron: '0 3 * * 1'
+  workflow_dispatch: # permet de le lancer manuellement aussi
+
+jobs:
+  update-assets:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'  # ou la version que tu veux
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run script - Set favorites from rating
+        env:
+          IMMICH_BASE_URL: ${{ secrets.IMMICH_BASE_URL }}
+          IMMICH_API_KEY: ${{ secrets.IMMICH_API_KEY }}
+        run: python ImmichFavoriteFromRating5.py
