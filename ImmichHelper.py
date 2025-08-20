@@ -2,7 +2,10 @@ import requests
 import json
 import os
 import logging
+from dotenv import load_dotenv
 
+# charge les variables du fichier .env si présent (secret github sinon)
+load_dotenv()
 
 
 logging.basicConfig(
