@@ -1,10 +1,20 @@
 import requests
 import json
 import os
+import logging
+
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
 
 
 base_url = os.environ["IMMICH_BASE_URL"]
 api_key = os.environ["IMMICH_API_KEY"]
+
+
 
 
 def get_asset_uuids(**filters) -> list[str]:
@@ -16,7 +26,6 @@ def get_asset_uuids(**filters) -> list[str]:
     page = 1
     size = int(filters.pop("size", 1000))  # max 1000 selon la doc
     uuids = []
-    total = None
 
     while True:
         payload = {"page": page, "size": size, **filters}
@@ -25,9 +34,6 @@ def get_asset_uuids(**filters) -> list[str]:
         data = r.json()
 
         assets = data.get("assets", [])
-
-        print(type(assets), assets.keys())
-        #print(assets["items"][1]["id"])
 
         uuids.extend(a["id"] for a in assets["items"])
 
@@ -47,6 +53,8 @@ def get_asset_uuids(**filters) -> list[str]:
         except (TypeError, ValueError):
             page += 1
 
+    logging.info(f"J'ai récupéré {len(uuids)} assets")
+    
     return uuids
 
 ## Unit test
@@ -69,9 +77,11 @@ def set_favorite(uuids):
     resp = requests.request("PUT", f"{base_url}/api/assets", headers=headers, data=payload)
 
     if resp.status_code == 204:
-        print(f"Succès : update effectué sur {len(uuids)} assets")
+        logging.info(f"Succès : update effectué sur {len(uuids)} assets")
+        print(f"::notice::Job terminé avec succès – {len(uuids)} assets passées en favoris")
     else:
-        print("Erreur :", resp.status_code, resp.text)
+        logging.error("Erreur :", resp.status_code, resp.text)
+        print(f"::error::Méthode set_favorite a retourné le code erreur {resp.status_code}, message dans les logs")
 
     print(resp.text)
 
