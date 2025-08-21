@@ -20,7 +20,7 @@ api_key = os.environ["IMMICH_API_KEY"]
 
 
 
-def get_asset_uuids(**filters) -> list[str]:
+def get_asset_info(info, **filters) -> list[str]:
     headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -28,7 +28,7 @@ def get_asset_uuids(**filters) -> list[str]:
     }
     page = 1
     size = int(filters.pop("size", 1000))  # max 1000 selon la doc
-    uuids = []
+    returns = []
 
     while True:
         payload = {"page": page, "size": size, **filters}
@@ -37,8 +37,10 @@ def get_asset_uuids(**filters) -> list[str]:
         data = r.json()
 
         assets = data.get("assets", [])
+        #print(assets["items"][0].keys())
+        #print(assets["items"][0])
 
-        uuids.extend(a["id"] for a in assets["items"])
+        returns.extend(a[info] for a in assets["items"])
 
         # arrêt si on a tout récupéré ou s'il n'y a plus de page suivante
         next_page = assets.get("nextPage")
@@ -56,14 +58,18 @@ def get_asset_uuids(**filters) -> list[str]:
         except (TypeError, ValueError):
             page += 1
 
-    logging.info(f"J'ai récupéré {len(uuids)} assets")
+    logging.info(f"J'ai récupéré {len(returns)} assets")
     
-    return uuids
+    return returns
 
 ## Unit test
-# best_not_favorited_ids = get_asset_uuids(isFavorite=False, rating=5)
-# print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
-# print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
+best_not_favorited_ids = get_asset_info(info="id", isFavorite=False, rating=5)
+print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
+print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
+
+best_not_favorited_ids = get_asset_info(info="originalPath", isFavorite=True, originalFileName="IMG_2525.JPG")
+print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
+print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
 
 
 def set_favorite(uuids):

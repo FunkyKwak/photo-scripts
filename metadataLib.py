@@ -76,7 +76,10 @@ def set_xmp_rating(photo_path, rating):
         )
         if result.returncode != 0:
             print(f"ExifTool error on {photo_path}: {result.stderr}")
+            return False
         else:
             print(f"Updated rating {rating} for {photo_path}")
+            return True
     except Exception as e:
         print(f"Failed to update {photo_path}: {e}")
+        return False
