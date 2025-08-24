@@ -2,8 +2,8 @@ name: Weekly Immich Update - Set favorites from rating
 
 on:
   schedule:
-    # Tous les lundis à 03h00 UTC
-    - cron: '0 3 * * 1'
+    # Chaque nuit à 02h00 UTC
+    - cron: '0 2 * * *'
   workflow_dispatch: # permet de le lancer manuellement aussi
 
 jobs:
