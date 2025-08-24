@@ -4,6 +4,8 @@ import os
 import logging
 from dotenv import load_dotenv
 
+from SimpleLog import SimpleLog
+
 # charge les variables du fichier .env si présent (secret github sinon)
 load_dotenv()
 
@@ -84,16 +86,20 @@ def set_favorite(uuids):
     }
 
     resp = requests.request("PUT", f"{base_url}/api/assets", headers=headers, data=payload)
-
-    if resp.status_code == 204:
-        logging.info(f"Succès : update effectué sur {len(uuids)} assets")
-        print(f"::notice::Job terminé avec succès – {len(uuids)} assets passées en favoris")
-    else:
-        logging.error("Erreur :", resp.status_code, resp.text)
-        print(f"::error::Méthode set_favorite a retourné le code erreur {resp.status_code}, message dans les logs")
-
     print(resp.text)
 
+    s = ""
+    if len(uuids) > 1:
+        s = "s"
+    simpleLog = SimpleLog(method="set_favorite", response=resp, success_message=f"{len(uuids)} asset{s} '5 étoiles' passé{s} en favori{s}")
+
+    simpleLog.log()
+    simpleLog.print_github_action()
+
+    if (simpleLog.type == "SUCCESS" and len(uuids) == 0):
+        pass
+    else:
+        simpleLog.telegram()
 
 ## Unit test
 #set_favorite(["8a34c963-4075-4f0b-b49a-e9f870055784", "07673d4a-a3e1-4d1c-aa10-0812ff95e1da"])
