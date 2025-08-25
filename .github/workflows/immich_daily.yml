@@ -1,4 +1,4 @@
-name: Weekly Immich Update - Set favorites from rating
+name: Daily Immich Update - Favorites = 5 stars
 
 on:
   schedule:
@@ -31,3 +31,11 @@ jobs:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python ImmichFavoriteFromRating5.py
+
+      - name: Run script - Set ratings from favorites
+        env:
+          IMMICH_BASE_URL: ${{ secrets.IMMICH_BASE_URL }}
+          IMMICH_API_KEY: ${{ secrets.IMMICH_API_KEY }}
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python ImmichFavoritesToXmp.py

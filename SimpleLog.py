@@ -38,7 +38,7 @@ class SimpleLog:
     
 
     def set_type(self):
-        if (self.response_code == 0 or self.response_code == 204):
+        if self.response_code in [0, 200, 204]:
             self.type = "SUCCESS"
         else:
             self.type = "ERROR"
@@ -70,4 +70,4 @@ class SimpleLog:
         if self.type == "SUCCESS":
             send_telegram_message(f"{self.success_message}")
         else:
-            send_telegram_message("Erreur :", self.response_code, self.response_text)
+            send_telegram_message(f"Erreur {self.response_code} : {self.response_text}")

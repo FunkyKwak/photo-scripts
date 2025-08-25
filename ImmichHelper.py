@@ -65,13 +65,13 @@ def get_asset_info(info, **filters) -> list[str]:
     return returns
 
 ## Unit test
-best_not_favorited_ids = get_asset_info(info="id", isFavorite=False, rating=5)
-print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
-print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
+# best_not_favorited_ids = get_asset_info(info="id", isFavorite=False, rating=5)
+# print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
+# print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
 
-best_not_favorited_ids = get_asset_info(info="originalPath", isFavorite=True, originalFileName="IMG_2525.JPG")
-print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
-print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
+# best_not_favorited_ids = get_asset_info(info="originalPath", isFavorite=True, originalFileName="IMG_2525.JPG")
+# print(f"J'ai récupéré {len(best_not_favorited_ids)} assets")
+# print(best_not_favorited_ids[:10])  # affiche les 10 premiers UUID
 
 
 def set_favorite(uuids):
@@ -86,7 +86,6 @@ def set_favorite(uuids):
     }
 
     resp = requests.request("PUT", f"{base_url}/api/assets", headers=headers, data=payload)
-    print(resp.text)
 
     s = ""
     if len(uuids) > 1:
@@ -103,3 +102,58 @@ def set_favorite(uuids):
 
 ## Unit test
 #set_favorite(["8a34c963-4075-4f0b-b49a-e9f870055784", "07673d4a-a3e1-4d1c-aa10-0812ff95e1da"])
+
+
+
+# Ne fonctionne pas : Erreur 500 (Internal Server Error)
+# def set_ratings(uuids, rating):
+
+#     payload = json.dumps({
+#     "ids": uuids,
+#     "rating": rating
+#     })
+#     headers = {
+#     'Content-Type': 'application/json',
+#     'x-api-key': api_key
+#     }
+
+#     resp = requests.request("PUT", f"{base_url}/api/assets", headers=headers, data=payload)
+#     print(resp.text)
+
+#     s = ""
+#     if len(uuids) > 1:
+#         s = "s"
+#     simpleLog = SimpleLog(method="set_rating", response=resp, success_message=f"{len(uuids)} asset{s} favori{s} marqué{s} '5 étoiles'")
+
+#     simpleLog.log()
+#     simpleLog.print_github_action()
+
+#     if (simpleLog.type == "SUCCESS" and len(uuids) == 0):
+#         pass
+#     else:
+#         simpleLog.telegram()
+
+# Unit test
+#set_ratings(["e25690bd-c557-49bb-b547-108d933698b8", "d927b85a-38b7-4ec1-ad76-385ccc53333d"], 5)
+
+
+def set_rating(uuid, rating):
+
+    payload = json.dumps({
+    "rating": rating
+    })
+    headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': api_key
+    }
+
+    resp = requests.request("PUT", f"{base_url}/api/assets/{uuid}", headers=headers, data=payload)
+
+    simpleLog = SimpleLog(method="set_rating", response=resp, success_message=f"1 asset favori marqué '5 étoiles'")
+    simpleLog.log()
+    # simpleLog.print_github_action()
+    # simpleLog.telegram()
+    return simpleLog
+
+# # Unit test
+# set_rating("d927b85a-38b7-4ec1-ad76-385ccc53333d", 5)
