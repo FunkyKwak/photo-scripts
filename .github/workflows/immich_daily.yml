@@ -16,7 +16,7 @@ jobs:
 
       - name: Test connection
         run: |
-          curl -v ${{ secrets.IMMICH_BASE_URL }}/api/server-info || true
+          curl -v ${{ secrets.IMMICH_BASE_URL }}/api/server-info
           
       - name: Setup Python
         uses: actions/setup-python@v4
