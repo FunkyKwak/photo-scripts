@@ -8,7 +8,7 @@ import time
 # CONFIGURATION
 # ==============================
 
-DB_FILE = "photo_inventory.db"
+DB_FILE = "GooglePhotos\\photo_inventory.db"
 
 # Ta requête SQL ici :
 SQL_QUERY = """
@@ -43,7 +43,7 @@ with approx as (
     LEFT JOIN files nas ON approx.nas_approx_id = nas.id
     INNER JOIN files google ON approx.google_id = google.id
 )
-select * 
+select google_path
 from googlenasdiff
 where nas_approx_count = 0
 and google_path NOT LIKE '%\Archiver\%';
