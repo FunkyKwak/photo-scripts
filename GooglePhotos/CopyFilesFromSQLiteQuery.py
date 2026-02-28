@@ -29,7 +29,7 @@ with approx as (
     FROM files google
     LEFT JOIN files nas_exact
         ON google.filename = nas_exact.filename
-        AND google.date_taken = nas_exact.date_taken
+        AND (google.date_taken = nas_exact.date_taken or google.date_taken LIKE '2026-02-25%')
         AND google.size <= nas_exact.size
         AND nas_exact.source = 'nas'
     WHERE google.source = 'google'
@@ -45,15 +45,14 @@ with approx as (
 )
 select google_path
 from googlenasdiff
-where nas_approx_count = 0
-and google_path NOT LIKE '%\Archiver\%';
+where nas_approx_count = 1;
 """
 
 # Racine d'origine (celle utilisée dans la base)
 SOURCE_ROOT = "F:\\TEMP\\Takeout"
 
 # Nouvelle racine de destination
-DEST_ROOT = "F:\\TEMP\\Missings"
+DEST_ROOT = "F:\\TEMP\\Approximative Matches (60)"
 
 # ==============================
 
