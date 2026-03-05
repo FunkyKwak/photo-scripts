@@ -6,7 +6,7 @@ from PIL.ExifTags import TAGS
 import datetime
 import time
 
-DB_FILE = "photo_inventory.db"
+DB_FILE = "GooglePhotos\\photo_inventory.db"
 
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic"}
 VIDEO_EXT = {".mp4", ".mov", ".avi", ".mkv"}
@@ -105,6 +105,7 @@ if __name__ == "__main__":
     #process_folder("F:\\TEMP\\Takeout", "google")
 
     print("Extraction NAS...")
-    process_folder("P:\\", "nas")
+#    process_folder("P:\\", "nas")
+    process_folder("S:\\", "syncthings")
 
     print("Inventaire terminé.")
