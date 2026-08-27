@@ -7,8 +7,9 @@ def create_database(db_path):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS digikam_xmp (
+        CREATE TABLE IF NOT EXISTS xmp_files (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            xmp_type TEXT NOT NULL CHECK(xmp_type IN ('std', 'ext')),
             file_name TEXT NOT NULL,
             file_path TEXT NOT NULL,
             renamed_xmp_file TEXT,
@@ -36,17 +37,14 @@ def scan_directory(directory, db_path):
             if filename.endswith('.xmp'):
                 # Extract base filename (without .xmp)
                 base_name = Path(filename).stem
-                
-                # Skip files without intermediate extension (e.g., skip "photo.xmp", keep "photo.jpg.xmp")
-                if '.' not in base_name:
-                    continue
+                xmp_type = 'std' if '.' not in base_name else 'ext'
                 
                 xmp_path = os.path.join(root, filename)
                 
                 cursor.execute('''
-                    INSERT INTO digikam_xmp (file_name, file_path)
-                    VALUES (?, ?)
-                ''', (filename, xmp_path))
+                    INSERT INTO xmp_files (file_name, file_path, xmp_type)
+                    VALUES (?, ?, ?)
+                ''', (filename, xmp_path, xmp_type))
                 count += 1
                 
                 # Log and commit every 1000 files
