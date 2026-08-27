@@ -13,6 +13,7 @@ def create_database(db_path):
             file_name TEXT NOT NULL,
             file_path TEXT NOT NULL,
             base_name TEXT NOT NULL,
+            xmp_modified_time REAL,
             renamed_xmp_file TEXT,
             UNIQUE(file_path)
         )
@@ -41,11 +42,14 @@ def scan_directory(directory, db_path):
                 xmp_type = 'std' if '.' not in base_name else 'ext'
                 
                 xmp_path = os.path.join(root, filename)
+
+                stat = os.stat(xmp_path)
+
                 
                 cursor.execute('''
-                    INSERT INTO xmp_files (file_name, file_path, base_name, xmp_type)
-                    VALUES (?, ?, ?, ?)
-                ''', (filename, xmp_path, base_name, xmp_type))
+                    INSERT INTO xmp_files (file_name, file_path, base_name, xmp_type, xmp_modified_time)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (filename, xmp_path, base_name, xmp_type, stat.st_mtime))
                 count += 1
                 
                 # Log and commit every 1000 files
