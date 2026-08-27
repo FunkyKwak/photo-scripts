@@ -24,6 +24,11 @@ where lower(cr2.file_name) like '%.cr2.%';
 
 -- Vérification des doublons
 select *, 
-    (select count(*) from xmp_files as xm2 where xm2.file_path = xm1.file_path) as duplicate_count
+    (select count(*) from xmp_files as xm2 where replace(xm2.file_path, xm2.file_name, '') = replace(xm1.file_path, xm1.file_name, '') and xm2.base_name = xm1.base_name) as duplicate_count
 from xmp_files as xm1
 where duplicate_count > 1
+
+
+select xmp_type, count(*) as count
+from xmp_files
+group by xmp_type
