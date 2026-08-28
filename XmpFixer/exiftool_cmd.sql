@@ -39,3 +39,15 @@ group by xmp_type, xmp_owner
 select *
 from xmp_files
 where image_file_path LIKE '(%)'
+
+-- Standard XMP restants
+select *
+from xmp_files
+where xmp_type = 'std'
+
+
+-- Fichiers renommés
+select *
+from xmp_files
+where renamed_xmp_file IS NOT NULL
+

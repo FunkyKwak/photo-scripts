@@ -18,8 +18,8 @@ def get_file_owner_sid(filepath):
 
 
 DIGIKAM_SID = [
-    get_file_owner_sid("\\\\[REDACTED]\\photo\\2020.06 - Guadeloupe\\Téléphone\\20200706_092520.xmp"),
-    get_file_owner_sid("\\\\[REDACTED]\\photo\\01 - Autres Katya\\Fleurs\\2018.06.03 - Beau bouquet\\IMG_8565.xmp")
+    get_file_owner_sid("\\\\[REDACTED]\\photo\\2020.06 - Guadeloupe\\Téléphone\\20200706_092520.jpg.xmp"),
+    get_file_owner_sid("\\\\[REDACTED]\\photo\\01 - Autres Katya\\Fleurs\\2018.06.03 - Beau bouquet\\IMG_8565.jpg.xmp")
 ]
 IMMICH_SID = get_file_owner_sid("\\\\[REDACTED]\\photo\\2020.06 - Guadeloupe\\Téléphone\\20200624_063419.jpg.xmp")
 
@@ -74,7 +74,7 @@ def scan_directory(directory, db_path):
 
         for filename in files:
             path = Path(root) / filename
-            if not filename.endswith('.xmp'):
+            if ".xmp" not in filename:
                 images_by_stem.setdefault(path.stem.lower(), []).append(str(path))
 
 
@@ -88,7 +88,21 @@ def scan_directory(directory, db_path):
                 stat = os.stat(xmp_path)
 
                 # Search for corresponding image file
-                candidates = images_by_stem.get((Path(root) / filename).stem.lower(), [])
+                candidates = images_by_stem.get(base_name.lower(), [])
+                if len(candidates) == 0:
+                    candidates = images_by_stem.get(Path(base_name).stem.lower(), [])
+                # Exclude RAW files
+                if len(candidates) == 2:
+                    candidates = [candidate for candidate in candidates
+                                  if not candidate.lower().endswith('.cr2')
+                                  and not candidate.lower().endswith('.mpo')
+                                  and not candidate.lower().endswith('.dng')]
+                # Exclude GOPRO files
+                if len(candidates) == 3:
+                    candidates = [candidate for candidate in candidates
+                                  if not candidate.lower().endswith('.thm')
+                                  and not candidate.lower().endswith('.wav')]
+
                 if len(candidates) == 1:
                     image_file_path = candidates[0]
                 else:

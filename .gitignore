@@ -1,4 +1,4 @@
 __pycache__
 Connexion.py
 .env
-XmpFixer/xmp_inventory.db*
+XmpFixer/xmp_inventory*.db*
