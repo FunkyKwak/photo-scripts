@@ -29,6 +29,11 @@ from xmp_files as xm1
 where duplicate_count > 1
 
 
-select xmp_type, count(*) as count
+select xmp_type, xmp_owner, count(*) as count
 from xmp_files
-group by xmp_type
+group by xmp_type, xmp_owner
+
+
+select xmp_modified_time, DATETIME(xmp_modified_time, 'unixepoch') as modified_date
+from xmp_files
+
