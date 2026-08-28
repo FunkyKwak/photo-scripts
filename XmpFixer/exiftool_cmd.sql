@@ -29,11 +29,13 @@ from xmp_files as xm1
 where duplicate_count > 1
 
 
+-- XMP par type et propriétaire
 select xmp_type, xmp_owner, count(*) as count
 from xmp_files
 group by xmp_type, xmp_owner
 
 
-select xmp_modified_time, DATETIME(xmp_modified_time, 'unixepoch') as modified_date
+-- XMP sans fichier image correspondant
+select *
 from xmp_files
-
+where image_file_path LIKE '(%)'

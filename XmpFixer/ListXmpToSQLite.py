@@ -48,6 +48,7 @@ def create_database(db_path):
             xmp_modified_time REAL,
             xmp_owner TEXT,
             renamed_xmp_file TEXT,
+            image_file_path TEXT,
             UNIQUE(file_path)
         )
     ''')
@@ -68,6 +69,15 @@ def scan_directory(directory, db_path):
         
         dirs[:] = [d for d in dirs if d not in excluded_dirs]
 
+        # dictionnaire contenant les fichiers non xmp du répertoire en cours de scan
+        images_by_stem = {}
+
+        for filename in files:
+            path = Path(root) / filename
+            if not filename.endswith('.xmp'):
+                images_by_stem.setdefault(path.stem.lower(), []).append(str(path))
+
+
         for filename in files:
             if filename.endswith('.xmp'):
                 # Extract base filename (without .xmp)
@@ -75,9 +85,14 @@ def scan_directory(directory, db_path):
                 xmp_type = 'std' if '.' not in base_name else 'ext'
                 
                 xmp_path = os.path.join(root, filename)
-
                 stat = os.stat(xmp_path)
 
+                # Search for corresponding image file
+                candidates = images_by_stem.get((Path(root) / filename).stem.lower(), [])
+                if len(candidates) == 1:
+                    image_file_path = candidates[0]
+                else:
+                    image_file_path = f"({len(candidates)})"
                 
                 cursor.execute('''
                     INSERT INTO xmp_files (
@@ -86,10 +101,11 @@ def scan_directory(directory, db_path):
                         base_name,
                         xmp_type,
                         xmp_modified_time,
-                        xmp_owner
+                        xmp_owner,
+                        image_file_path
                     )
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''', (filename, xmp_path, base_name, xmp_type, stat.st_mtime, get_file_owner(xmp_path)))
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                ''', (filename, xmp_path, base_name, xmp_type, stat.st_mtime, get_file_owner(xmp_path), image_file_path))
                 count += 1
                 
                 # Log and commit every 250 files
