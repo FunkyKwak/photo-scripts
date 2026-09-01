@@ -157,7 +157,7 @@ When prompted, enter the folder to scan.
 
 ## GitHub Actions automation for Immich
 
-![Description](5stars-favorites.drawio.svg)
+![5stars-favorites](5stars-favorites.drawio.svg)
 
 
 This repository includes a scheduled workflow at [.github/workflows/immich_daily.yml](.github/workflows/immich_daily.yml) that runs every night at 02:00 UTC.
