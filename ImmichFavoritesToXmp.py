@@ -40,6 +40,9 @@ if (nb_ko == 0):
     print(f"::notice::Job terminé avec succès – {nb_ok} asset{s} favori{s} marqué{s} 5 étoiles")
     if (nb_ok > 0):
         SimpleLog.send_telegram_message(f"{nb_ok} asset{s} favori{s} marqué{s} 5 étoiles")
+    if (nb_ok == 6):
+        asset_ids = ','.join(to_rate5)
+        print(f"::debug::Liste des ID traités : {asset_ids}")
 else:
     if nb_ko > 1:
         s = "s"
