@@ -1,11 +1,5 @@
 # Photo Scripts
 
-<div align="center">
-  <img src="https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python" alt="Python 3.10+" />
-  <img src="https://img.shields.io/badge/Platform-Windows-0078D6?style=for-the-badge&logo=microsoft" alt="Windows" />
-  <img src="https://img.shields.io/badge/Status-Toolkit-4CAF50?style=for-the-badge" alt="Status" />
-</div>
-
 A personal toolkit for photo metadata automation, Plex synchronization, Immich workflows, and photo library inventory management.
 
 This repository brings together a set of Python scripts designed to keep photo collections consistent across Plex, Immich, XMP sidecars, and local disk storage.
