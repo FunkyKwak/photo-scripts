@@ -224,43 +224,9 @@ This is designed so people can fork the repo, keep the same automation logic, an
 - Keep secrets like Immich tokens in a local `.env` file, not in version control.
 - Prefer a dry run or small sample before bulk operations.
 
-## Project structure
-
-```text
-photo-scripts/
-├── ComparePlaylists.py
-├── ImmichFavoriteFromRating5.py
-├── ImmichFavoritesToXmp.py
-├── ImmichHelper.py
-├── metadataLib.py
-├── PlexFavoritesToXmp.py
-├── PlexHelper.py
-├── RatePlaylist.py
-├── README.md
-├── requirements.txt
-├── SimpleLog.py
-├── GooglePhotos/
-│   ├── CompareQueries.sql
-│   ├── CopyFilesFromSQLiteQuery.py
-│   ├── ListPhotoToSQLite.py
-│   └── MoveModifiéInSubFolder.py
-└── XmpFixer/
-    ├── exiftool_cmd.sql
-    ├── ListDuplicateXmpToSQLite.py
-    ├── ListXmpToSQLite.py
-    ├── RenameExtToStdXmp.py
-    └── RenameStdToExtXmp.py
-```
 
 ## License and status
 
 This project is a personal automation toolkit and is intended for local, self-managed use. It is not a production SaaS application and may evolve depending on your personal workflow.
 
-## Future improvements
-
-- standardize naming and logging conventions across scripts
-- add a centralized CLI runner
-- move configuration into dedicated config files
-- improve safety checks for path handling and metadata writes
-- document each script in more detail with arguments and expected outputs
 
