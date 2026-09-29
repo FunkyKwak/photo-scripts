@@ -1,5 +1,6 @@
 {
     "exiftool_path": "C:\\Program Files\\exiftool-13.52_64\\exiftool.exe",
+    "digikam_database": "P:\\digikam4.db",
     "photo_extensions": [
         ".jpg", ".jpeg",
         ".png",

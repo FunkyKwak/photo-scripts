@@ -1,246 +1,146 @@
-import json
-import subprocess
-import sys
-from pathlib import Path
-import tkinter as tk
-from tkinter import filedialog, messagebox
-
+from tkinter import messagebox
 import matplotlib.pyplot as plt
-
-from Helpers import metadataLib
-
-
-import os
-from pathlib import Path
+from Helpers import DigikamHelper, metadataLib
 
 
-def get_photo_files(folder):
-    extensions = (
-        set(metadataLib.config["photo_extensions"])
-        | set(metadataLib.config["raw_extensions"])
-        | set(metadataLib.config["video_extensions"])
-    )
 
-    files = []
-
-    for root, dirs, filenames in os.walk(folder):
-        # Empêche os.walk() d'entrer dans les répertoires exclus
-        dirs[:] = [
-            d for d in dirs
-            if d not in metadataLib.config["excluded_dirs"]
-        ]
-
-        for filename in filenames:
-            path = Path(root) / filename
-
-            if path.suffix.lower() in extensions:
-                files.append(path)
-
-    return files
-
-
-def count_five_star_photos(files):
+def create_chart(results):
     """
-    Utilise ExifTool pour récupérer XMP:Rating.
-
-    Retourne le nombre de photos ayant exactement Rating = 5.
+    Crée et affiche le graphique.
     """
 
-    if not files:
-        return 0
-
-    count = 0
-
-    # On traite les fichiers par lots afin d'éviter une commande
-    # gigantesque avec une très grosse photothèque.
-    batch_size = 500
-
-    for i in range(0, len(files), batch_size):
-        batch = files[i:i + batch_size]
-
-        command = [
-            metadataLib.exiftool,
-            "-XMP:Rating",
-            "-j",
-            "-n",
-            *[str(file) for file in batch],
-        ]
-
-        result = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            encoding="utf-8",
-            errors="replace",
-            creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0,
-        )
-
-        if result.returncode != 0:
-            print("Erreur ExifTool :")
-            print(result.stderr)
-            continue
-
-        try:
-            metadata = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            print("Impossible de lire la sortie JSON d'ExifTool.")
-            continue
-
-        for photo in metadata:
-            rating = photo.get("Rating")
-
-            try:
-                if float(rating) == 5:
-                    count += 1
-            except (TypeError, ValueError):
-                pass
-
-    return count
-
-
-def analyze_folder(root_folder):
-    """
-    Analyse les sous-dossiers directs du dossier racine.
-
-    Chaque ligne du graphique représente un sous-dossier direct,
-    mais le comptage est récursif.
-    """
-
-    directories = [
-        path
-        for path in root_folder.iterdir()
-        if path.is_dir()
-    ]
-
-    if not directories:
+    if not results:
         messagebox.showinfo(
-            "Aucun sous-dossier",
-            "Le dossier sélectionné ne contient aucun sous-dossier."
+            "Aucun résultat",
+            "Le dossier ne contient aucun sous-répertoire."
         )
-        return []
+        return
 
-    results = []
-
-    for index, directory in enumerate(sorted(directories), start=1):
-        if (directory.name in metadataLib.config["excluded_dirs"]):
-            continue
-
-
-        print(f"[{index}/{len(directories)}] Analyse de : {directory.name}")
-
-        photos = get_photo_files(directory)
-
-        print(f"    {len(photos)} photos trouvées")
-
-        five_stars = count_five_star_photos(photos)
-
-        print(f"    {five_stars} photos 5★")
-
-        results.append(
-            {
-                "name": directory.name,
-                "count": five_stars,
-                "total": len(photos),
-            }
-        )
-
-    return results
-
-
-def create_chart(results, root_folder):
-    """
-    Génère et affiche le graphique.
-    """
-
-    # Tri décroissant par nombre de photos 5 étoiles.
+    # Tri décroissant du nombre de photos 5 étoiles.
     results = sorted(
         results,
-        key=lambda x: x["count"],
-        reverse=True,
+        key=lambda item: item["name"],
+        reverse=False
     )
 
-    names = [item["name"] for item in results]
-    counts = [item["count"] for item in results]
+    names = [
+        item["name"]
+        for item in results
+    ]
+
+    counts = [
+        item["count"]
+        for item in results
+    ]
 
     # Hauteur adaptée au nombre de répertoires.
-    height = max(5, len(results) * 0.55)
+    height = max(
+        5,
+        len(results) * 0.55
+    )
 
-    fig, ax = plt.subplots(figsize=(12, height))
+    fig, ax = plt.subplots(
+        figsize=(12, height)
+    )
 
-    bars = ax.barh(names, counts)
+    bars = ax.barh(
+        names,
+        counts
+    )
 
     # Le plus grand en haut.
     ax.invert_yaxis()
 
     ax.set_title(
-        f"Photos 5 étoiles — {root_folder.name}",
+        f"Photos 5 étoiles",
         fontsize=16,
-        pad=15,
+        pad=15
     )
 
-    ax.set_xlabel("Nombre de photos avec XMP:Rating = 5")
+    ax.set_xlabel(
+        "Nombre de photos avec XMP:Rating = 5"
+    )
 
     ax.grid(
         axis="x",
         linestyle="--",
-        alpha=0.3,
+        alpha=0.3
     )
 
-    # Affichage de la valeur au bout de chaque barre.
+    # Affiche la valeur à droite de chaque barre.
+    max_count = max(counts, default=0)
+
     for bar, value in zip(bars, counts):
+
+        # Petit espace après la barre.
+        offset = max_count * 0.01 if max_count else 0.1
+
         ax.text(
-            bar.get_width() + max(counts, default=1) * 0.01,
+            bar.get_width() + offset,
             bar.get_y() + bar.get_height() / 2,
             str(value),
-            va="center",
+            va="center"
         )
 
     plt.tight_layout()
 
-    # Sauvegarde automatique à côté du dossier analysé.
-    output_file = root_folder / "photos_5_etoiles.png"
+    # Enregistre automatiquement le graphique.
+    output_file = "photos_5_etoiles.png"
 
     fig.savefig(
         output_file,
         dpi=150,
-        bbox_inches="tight",
+        bbox_inches="tight"
     )
 
     print()
     print(f"Graphique enregistré :")
     print(output_file)
+    print()
 
     plt.show()
 
 
 def main():
-    print("=== Photos 5 étoiles ===")
+
+    print("=== Photos 5 étoiles — digiKam ===")
     print()
 
-    # Fenêtre de sélection du dossier.
-    root = tk.Tk()
-    root.withdraw()
+    database_path = metadataLib.config.get("digikam_database")
 
-    selected_folder = filedialog.askdirectory(
-        title="Sélectionne le dossier racine de ta photothèque"
-    )
+    print(f"Base digiKam : {database_path}")
 
-    root.destroy()
+    print()
+    print("Analyse de la base digiKam...")
 
-    if not selected_folder:
+    try:
+
+        results = DigikamHelper.get_five_star_counts(
+            database_path=database_path,
+            excluded_dirs=metadataLib.config.get("excluded_dirs", [])
+        )
+
+    except Exception as error:
+
+        messagebox.showerror(
+            "Erreur",
+            str(error)
+        )
+
         return
 
-    root_folder = Path(selected_folder)
-
-    print(f"Dossier sélectionné : {root_folder}")
     print()
 
-    results = analyze_folder(root_folder)
+    for result in results:
 
-    if not results:
-        return
+        print(
+            f"{result['name']}: "
+            f"{result['count']} photos 5★"
+        )
 
-    create_chart(results, root_folder)
+    print()
+
+    create_chart(results)
 
 
 if __name__ == "__main__":

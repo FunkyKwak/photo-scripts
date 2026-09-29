@@ -12,6 +12,8 @@ This repository brings together a set of Python scripts designed to keep photo c
 - Immich favorite = XMP 5 stars rating :
   - Mark Immich assets as favorites based on rating rules
   - Apply ratings to Immich assets automatically
+- Digikam
+  - Graph of the repartition of 5 stars asset accross folders
 - Inventory photo folders into SQLite databases
 - Detect duplicate XMP sidecars and naming inconsistencies
 - Reuse SQL-based file selection for copying or organizing media
@@ -22,7 +24,8 @@ Managing a large personal photo library often means juggling several systems:
 
 - Plex for browsing media (I previously used it to browse piictures, these scripts helped me to migrate to Immich)
 - Immich for browsing pictures
-- XMP sidecars for preserving metadata on disk
+- Digikam to organise my photoo library, add tags and ratiings into xmp sidecars
+- XMP sidecars for preserving metadata on disk, shared from one application to another
 - Google Takeout or local folders for exported media archives
 
 This project helps automate the repetitive tasks between those systems and keeps metadata aligned.
@@ -36,8 +39,10 @@ This project helps automate the repetitive tasks between those systems and keeps
   - [RatePlaylist.py](RatePlaylist.py): applies a chosen rating to all photos in a Plex playlist.
   - [PlexFavoritesToXmp.py](PlexFavoritesToXmp.py): compares Plex ratings with XMP metadata and updates the sidecar when needed.
 - Immich
-    - [ImmichFavoriteFromRating5.py](ImmichFavoriteFromRating5.py): marks non-favorited assets with a 5-star rating as favorites.
-    - [ImmichFavoritesToXmp.py](ImmichFavoritesToXmp.py): updates favorite assets that do not yet have a 5-star rating.
+  - [ImmichFavoriteFromRating5.py](ImmichFavoriteFromRating5.py): marks non-favorited assets with a 5-star rating as favorites.
+  - [ImmichFavoritesToXmp.py](ImmichFavoritesToXmp.py): updates favorite assets that do not yet have a 5-star rating.
+- Digikam
+  - [photo_rating_chart.py](photo_rating_chart.py): Create a graph with the repartition of 5 stars asset accross folders.
 - Helpers/utility libs
   - [PlexHelper.py](Helpers/PlexHelper.py): utility functions to traverse Plex albums and identify file paths.
   - [ImmichHelper.py](Helpers/ImmichHelper.py): helper for querying and updating Immich assets via the API.
@@ -96,7 +101,11 @@ IMMICH_API_KEY=your_api_key
 
 #### ExifTool
 
-Some metadata operations rely on ExifTool and require a valid local binary path in [config.json](config.json).
+Some metadata operations rely on ExifTool and requires a valid local binary path in [config.json](config.json).
+
+#### Digikam
+
+If you want to use a script using a connectioon to your Diigikam database, it requires a valid local database path in [config.json](config.json).
 
 ## Typical workflows
 
