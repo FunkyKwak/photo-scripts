@@ -1,9 +1,41 @@
 import os
 import xml.etree.ElementTree as ET
 import subprocess
+import json
+from pathlib import Path
 
 
-exiftool = "C:\\Users\\crazy\\Downloads\\exiftool-13.34_64\\exiftool-13.34_64\\exiftool.exe"
+def load_config():
+    config_file = Path(__file__).parent / "config.json"
+
+    if not config_file.exists():
+        raise FileNotFoundError(
+            f"Fichier de configuration introuvable : {config_file}"
+        )
+
+    with config_file.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def find_exiftool():
+    config = load_config()
+
+    exiftool_path = Path(config["exiftool_path"])
+
+    # Si le chemin est relatif, il est relatif au dossier du programme.
+    if not exiftool_path.is_absolute():
+        exiftool_path = Path(__file__).parent / exiftool_path
+
+    if not exiftool_path.exists():
+        raise FileNotFoundError(
+            f"ExifTool introuvable : {exiftool_path}"
+        )
+
+    return str(exiftool_path)
+
+
+exiftool = find_exiftool()
+
 
 def get_rating(photo_path):
     """

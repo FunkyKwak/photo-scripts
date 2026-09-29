@@ -39,10 +39,10 @@ This project helps automate the repetitive tasks between those systems and keeps
     - [ImmichFavoriteFromRating5.py](ImmichFavoriteFromRating5.py): marks non-favorited assets with a 5-star rating as favorites.
     - [ImmichFavoritesToXmp.py](ImmichFavoritesToXmp.py): updates favorite assets that do not yet have a 5-star rating.
 - Helpers/utility libs
-  - [PlexHelper.py](PlexHelper.py): utility functions to traverse Plex albums and identify file paths.
-  - [ImmichHelper.py](ImmichHelper.py): helper for querying and updating Immich assets via the API.
-  - [metadataLib.py](metadataLib.py): reads and writes ratings with XMP and ExifTool support.
-  - [SimpleLog.py](SimpleLog.py): lightweight logging wrapper for console, GitHub Actions, and Telegram output.
+  - [PlexHelper.py](Helpers/PlexHelper.py): utility functions to traverse Plex albums and identify file paths.
+  - [ImmichHelper.py](Helpers/ImmichHelper.py): helper for querying and updating Immich assets via the API.
+  - [metadataLib.py](Helpers/metadataLib.py): reads and writes ratings with XMP and ExifTool support.
+  - [SimpleLog.py](Helpers/SimpleLog.py): lightweight logging wrapper for console, GitHub Actions, and Telegram output.
 
 ### Google Photos utilities
 
@@ -78,11 +78,11 @@ pip install -r requirements.txt
 
 #### Plex
 
-Create a local `Connexion.py` file in the project root:
+Create a `.env` file in the project root:
 
-```python
-baseurl = "http://localhost:32400"
-token = "YOUR_PLEX_TOKEN"
+```env
+PLEX_BASE_URL = "http://localhost:32400"
+PLEX_TOKEN = "YOUR_PLEX_TOKEN"
 ```
 
 #### Immich
@@ -96,7 +96,7 @@ IMMICH_API_KEY=your_api_key
 
 #### ExifTool
 
-Some metadata operations rely on ExifTool and require a valid local binary path in [metadataLib.py](metadataLib.py).
+Some metadata operations rely on ExifTool and require a valid local binary path in [config.json](config.json).
 
 ## Typical workflows
 
