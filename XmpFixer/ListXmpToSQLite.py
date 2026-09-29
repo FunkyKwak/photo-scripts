@@ -3,6 +3,8 @@ import sqlite3
 from pathlib import Path
 import win32security
 
+from Helpers import metadataLib
+
 
 
 def get_file_owner_sid(filepath):
@@ -59,15 +61,12 @@ def scan_directory(directory, db_path):
     """Scan directory for .xmp files and add them to SQLite database"""
     conn = create_database(db_path)
     cursor = conn.cursor()
-    
-    # Répertoires à exclure
-    excluded_dirs = {'#recycle', '#snapshot', '.dtrash'}
-    
+        
     count = 0
     
     for root, dirs, files in os.walk(directory):
         
-        dirs[:] = [d for d in dirs if d not in excluded_dirs]
+        dirs[:] = [d for d in dirs if d not in metadataLib.config["excluded_dirs"]]
 
         # dictionnaire contenant les fichiers non xmp du répertoire en cours de scan
         images_by_stem = {}

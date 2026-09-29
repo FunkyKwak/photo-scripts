@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def load_config():
-    config_file = Path(__file__).parent / "config.json"
+    config_file = Path(__file__).parent / "../config.json"
 
     if not config_file.exists():
         raise FileNotFoundError(
@@ -16,10 +16,9 @@ def load_config():
     with config_file.open("r", encoding="utf-8") as file:
         return json.load(file)
 
+config = load_config()
 
 def find_exiftool():
-    config = load_config()
-
     exiftool_path = Path(config["exiftool_path"])
 
     # Si le chemin est relatif, il est relatif au dossier du programme.

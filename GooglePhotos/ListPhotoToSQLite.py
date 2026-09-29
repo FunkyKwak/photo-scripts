@@ -6,10 +6,9 @@ from PIL.ExifTags import TAGS
 import datetime
 import time
 
-DB_FILE = "GooglePhotos\\photo_inventory.db"
+from Helpers import metadataLib
 
-IMAGE_EXT = {".jpg", ".jpeg", ".png", ".heic"}
-VIDEO_EXT = {".mp4", ".mov", ".avi", ".mkv"}
+DB_FILE = "GooglePhotos\\photo_inventory.db"
 BATCH_SIZE = 1000  # commit tous les 1000 fichiers
 
 def init_db():
@@ -59,7 +58,7 @@ def process_folder(root_path, source_name):
     for root, _, files in os.walk(root_path):
         for file in files:
             ext = Path(file).suffix.lower()
-            if ext not in IMAGE_EXT and ext not in VIDEO_EXT:
+            if ext not in metadataLib.config["photo_extensions"] and ext not in metadataLib.config["video_extensions"]:
                 continue
 
             full_path = os.path.join(root, file)
@@ -68,7 +67,7 @@ def process_folder(root_path, source_name):
                 size = os.path.getsize(full_path)
 
                 date_taken = None
-                if ext in IMAGE_EXT:
+                if ext in metadataLib.config["photo_extensions"]:
                     date_taken = get_exif_date(full_path)
                 if not date_taken:
                     date_taken = get_file_date(full_path)

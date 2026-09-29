@@ -2,6 +2,7 @@ import os
 import sqlite3
 from pathlib import Path
 from collections import defaultdict
+from Helpers import metadataLib
 
 def find_duplicate_xmp_pairs(directory):
     """Parcourt le répertoire et identifie les paires de fichiers XMP doublons dans le même répertoire"""
@@ -9,13 +10,11 @@ def find_duplicate_xmp_pairs(directory):
     total_standard = 0
     total_digikam = 0
     total_xmp_found = 0
-    
-    # Répertoires à exclure
-    excluded_dirs = {'#recycle', '#snapshot', '.dtrash'}
+        
     
     for root, dirs, files in os.walk(directory):
         # Exclure les répertoires indésirables
-        dirs[:] = [d for d in dirs if d not in excluded_dirs]
+        dirs[:] = [d for d in dirs if d not in metadataLib.config["excluded_dirs"]]
         
         xmp_files = [f for f in files if f.endswith('.xmp')]
         total_xmp_found += len(xmp_files)

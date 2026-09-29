@@ -1,3 +1,34 @@
 {
-    "exiftool_path": "C:\\Program Files\\ExifTool\\exiftool.exe"
+    "exiftool_path": "C:\\Program Files\\exiftool-13.52_64\\exiftool.exe",
+    "photo_extensions": [
+        ".jpg", ".jpeg",
+        ".png",
+        ".heic",
+        ".tif", ".tiff"
+    ],
+    "raw_extensions": [
+        ".arw",
+        ".cr2",
+        ".cr3",
+        ".nef",
+        ".nrw",
+        ".raf",
+        ".orf",
+        ".rw2",
+        ".dng",
+        ".pef",
+        ".srw",
+        ".raw"
+    ],
+    "video_extensions": [
+        ".mp4",
+        ".mov",
+        ".avi",
+        ".mkv"
+    ],
+    "excluded_dirs": [
+        "#recycle",
+        "#snapshot",
+        ".dtrash"
+    ]
 }
