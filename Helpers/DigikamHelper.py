@@ -113,8 +113,8 @@ def get_five_star_counts(database_path, excluded_dirs=None):
 
         count = five_star_by_album.get(album["id"], 0)
 
-        if count == 0:
-            continue
+        #if count == 0:
+        #    continue
 
         # On distingue les collections digiKam.
         key = (

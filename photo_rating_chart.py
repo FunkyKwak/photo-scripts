@@ -5,100 +5,51 @@ from Helpers import DigikamHelper, metadataLib
 
 
 def create_chart(results):
-    """
-    Crée et affiche le graphique.
-    """
-
-    if not results:
-        messagebox.showinfo(
-            "Aucun résultat",
-            "Le dossier ne contient aucun sous-répertoire."
-        )
-        return
-
-    # Tri décroissant du nombre de photos 5 étoiles.
     results = sorted(
         results,
         key=lambda item: item["name"],
         reverse=False
     )
 
-    names = [
-        item["name"]
-        for item in results
-    ]
+    # Hauteur proportionnelle au nombre de répertoires
+    height_per_directory = 0.25
+    min_height = 6
 
-    counts = [
-        item["count"]
-        for item in results
-    ]
-
-    # Hauteur adaptée au nombre de répertoires.
     height = max(
-        5,
-        len(results) * 0.55
+        min_height,
+        len(results) * height_per_directory
     )
 
     fig, ax = plt.subplots(
         figsize=(12, height)
     )
 
-    bars = ax.barh(
-        names,
-        counts
-    )
+    names = [item["name"] for item in results]
+    counts = [item["count"] for item in results]
 
-    # Le plus grand en haut.
+    bars = ax.barh(names, counts)
+
     ax.invert_yaxis()
 
-    ax.set_title(
-        f"Photos 5 étoiles",
-        fontsize=16,
-        pad=15
-    )
-
-    ax.set_xlabel(
-        "Nombre de photos avec XMP:Rating = 5"
-    )
-
-    ax.grid(
-        axis="x",
-        linestyle="--",
-        alpha=0.3
-    )
-
-    # Affiche la valeur à droite de chaque barre.
-    max_count = max(counts, default=0)
-
-    for bar, value in zip(bars, counts):
-
-        # Petit espace après la barre.
-        offset = max_count * 0.01 if max_count else 0.1
-
+    for bar, count in zip(bars, counts):
         ax.text(
-            bar.get_width() + offset,
+            bar.get_width(),
             bar.get_y() + bar.get_height() / 2,
-            str(value),
+            f" {count}",
             va="center"
         )
 
+    ax.set_xlabel("Photos 5★")
+    ax.set_ylabel("Répertoire")
+    ax.set_title("Photos 5★ par répertoire")
+
     plt.tight_layout()
 
-    # Enregistre automatiquement le graphique.
-    output_file = "photos_5_etoiles.png"
-
-    fig.savefig(
-        output_file,
+    plt.savefig(
+        "photos_5_etoiles.png",
         dpi=150,
         bbox_inches="tight"
     )
-
-    print()
-    print(f"Graphique enregistré :")
-    print(output_file)
-    print()
-
-    plt.show()
 
 
 def main():
