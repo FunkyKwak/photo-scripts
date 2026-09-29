@@ -1,11 +1,15 @@
-import Connexion
-import PlexHelper
-import metadataLib
+import os
+from Helpers import PlexHelper
+from Helpers import metadataLib
 from plexapi.server import PlexServer
 
 
 
-plex = PlexServer(Connexion.baseurl, Connexion.token)
+base_url = os.environ["PLEX_BASE_URL"]
+token = os.environ["PLEX_TOKEN"]
+
+
+plex = PlexServer(base_url, token)
 
 
 
