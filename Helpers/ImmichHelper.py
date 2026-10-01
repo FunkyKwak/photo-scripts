@@ -4,7 +4,7 @@ import os
 import logging
 from dotenv import load_dotenv
 
-from SimpleLog import SimpleLog
+from Helpers.SimpleLog import SimpleLog
 
 # charge les variables du fichier .env si présent (secret github sinon)
 load_dotenv()
